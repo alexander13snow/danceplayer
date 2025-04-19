@@ -29,7 +29,7 @@ export const Home = ({ id }) => {
     fetchToken();
   }, []);
 
-  // Получение треков пользователя
+  // Загрузка аудио пользователя
   useEffect(() => {
     if (!token) return;
 
@@ -43,8 +43,7 @@ export const Home = ({ id }) => {
             count: 50
           }
         });
-        const filtered = response.response.items.filter(track => track.url);
-        setTracks(filtered);
+        setTracks(response.response.items); // Показываем всё, даже без url
       } catch (error) {
         console.error('Ошибка при получении треков:', error);
       }
@@ -53,7 +52,7 @@ export const Home = ({ id }) => {
     fetchMyMusic();
   }, [token]);
 
-  // Поиск треков
+  // Поиск
   const searchTracks = async (query) => {
     setSearchQuery(query);
     if (!query || !token) return;
@@ -68,8 +67,7 @@ export const Home = ({ id }) => {
           count: 30
         }
       });
-      const filtered = response.response.items.filter(track => track.url);
-      setTracks(filtered);
+      setTracks(response.response.items); // Показываем всё
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
@@ -100,11 +98,12 @@ export const Home = ({ id }) => {
           <SimpleCell
             key={track.id}
             before={<Icon28PlayCircleFillAzure />}
-            onClick={() => setSelectedTrack(track)}
+            onClick={() => track.url && setSelectedTrack(track)}
             subtitle={track.artist}
             description={track.title}
+            disabled={!track.url}
           >
-            {track.artist} — {track.title}
+            {track.artist} — {track.title} {track.url ? "▶️" : "⛔"}
           </SimpleCell>
         ))}
         {!tracks.length && <Text>Нет доступных треков</Text>}
