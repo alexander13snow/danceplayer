@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { Panel, PanelHeader, Group, SimpleCell, Search, Slider, Button, Text } from '@vkontakte/vkui';
+import { Panel, PanelHeader, Group, SimpleCell, Search, Slider, Text } from '@vkontakte/vkui';
 import { Icon28PlayCircleFillAzure } from '@vkontakte/icons';
 
 const APP_ID = 53455629;
@@ -13,7 +13,7 @@ export const Home = ({ id }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const audioRef = useRef(null);
 
-  // Получение токена
+  // Получаем токен
   useEffect(() => {
     async function fetchToken() {
       try {
@@ -21,15 +21,16 @@ export const Home = ({ id }) => {
           app_id: APP_ID,
           scope: 'audio'
         });
+        console.log("🔑 access_token:", result.access_token);
         setToken(result.access_token);
       } catch (error) {
-        console.error('Ошибка при получении токена:', error);
+        console.error('❌ Ошибка при получении токена:', error);
       }
     }
     fetchToken();
   }, []);
 
-  // Загрузка аудио пользователя
+  // Загружаем музыку пользователя
   useEffect(() => {
     if (!token) return;
 
@@ -43,16 +44,17 @@ export const Home = ({ id }) => {
             count: 50
           }
         });
-        setTracks(response.response.items); // Показываем всё, даже без url
+        console.log('✅ Успешный ответ audio.get:', response);
+        setTracks(response.response.items);
       } catch (error) {
-        console.error('Ошибка при получении треков:', error);
+        console.error('❌ Ошибка audio.get:', error);
       }
     }
 
     fetchMyMusic();
   }, [token]);
 
-  // Поиск
+  // Поиск треков
   const searchTracks = async (query) => {
     setSearchQuery(query);
     if (!query || !token) return;
@@ -67,9 +69,10 @@ export const Home = ({ id }) => {
           count: 30
         }
       });
-      setTracks(response.response.items); // Показываем всё
+      console.log('🔍 Успешный ответ audio.search:', response);
+      setTracks(response.response.items);
     } catch (error) {
-      console.error('Ошибка при поиске:', error);
+      console.error('❌ Ошибка audio.search:', error);
     }
   };
 
