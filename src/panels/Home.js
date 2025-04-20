@@ -13,7 +13,8 @@ import {
 import { Icon28PlayCircle } from '@vkontakte/icons';
 
 const isValidAudioLink = (link) => {
-  return /^https:\/\/[a-zA-Z0-9.-]+\.vk\.com\/.+/.test(link);
+  // теперь разрешаем любые http/https ссылки
+  return /^https?:\/\/.+/.test(link);
 };
 
 export const Home = ({ id }) => {
@@ -26,7 +27,7 @@ export const Home = ({ id }) => {
       setAudioLinks((prev) => [...prev, newLink]);
       setNewLink('');
     } else {
-      alert('Некорректная ссылка. Убедитесь, что это ссылка на аудиозапись ВКонтакте.');
+      alert('Введите корректную ссылку (начинающуюся с http:// или https://)');
     }
   };
 
@@ -41,7 +42,7 @@ export const Home = ({ id }) => {
       <Group header={<Header mode="secondary">Добавить ссылку на трек</Header>}>
         <FormItem top="Ссылка на трек">
           <Input
-            placeholder="https://vk.com/audio..."
+            placeholder="Вставьте ссылку на трек (например, https://...)"
             value={newLink}
             onChange={(e) => setNewLink(e.target.value)}
           />
